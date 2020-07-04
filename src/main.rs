@@ -7,27 +7,27 @@ fn main() {
     // PPM example: https://en.wikipedia.org/wiki/Netpbm#PPM_example
 
     // Write "P3" header for PPM format
-    println!("P3\n");
+    println!("P3");
 
     // Write image width, height
-    println!("{} {}\n", IMAGE_WIDTH, IMAGE_HEIGHT);
+    println!("{} {}", IMAGE_WIDTH, IMAGE_HEIGHT);
 
     // Write maximum color value
-    println!("{}\n", MAX_COLOUR_VALUE);
+    println!("{}", MAX_COLOUR_VALUE);
 
     // Write the pixels from top to bottom row
-    for height in (0..IMAGE_HEIGHT - 1).rev() {
+    for height in (0..IMAGE_HEIGHT).rev() {
         // Write the pixels for each row from left to right
         for width in 0..IMAGE_WIDTH {
             let r : f64 = f64::from(width) / f64::from(IMAGE_WIDTH - 1);
-            let g : f64 = f64::from(width) / f64::from(IMAGE_HEIGHT - 1);
+            let g : f64 = f64::from(height) / f64::from(IMAGE_HEIGHT - 1);
             let b : f64 = 0.25;
 
-            let ir : i32 = (r * 255.99) as i32;
-            let ig : i32 = (g * 255.99) as i32;
-            let ib : i32 = (b * 255.99) as i32;
+            let ir : i32 = (r * 255.999) as i32;
+            let ig : i32 = (g * 255.999) as i32;
+            let ib : i32 = (b * 255.999) as i32;
 
-            println!("{} {} {}\n", ir, ig, ib)
+            println!("{} {} {}", ir, ig, ib)
         }
     }
     eprintln!("done")
