@@ -3,11 +3,11 @@
 #[macro_use]
 extern crate lazy_static;
 
-mod encoder;
-mod vec3;
 mod color;
+mod encoder;
 mod point;
 mod ray;
+mod vec3;
 
 use color::Color;
 use point::Point;
