@@ -77,7 +77,7 @@ fn main() {
             let v = height as f64 / (IMAGE_PIXEL_HEIGHT - 1) as f64; // Vertical direction vector
             let ray = Ray {
                 origin: ORIGIN,
-                direction: *IMAGE_LOWER_LEFT_CORNER
+                direction: *IMAGE_LOWER_LEFT_CORNER - ORIGIN
                     + u * HORIZONTAL_DIRECTION_VECTOR
                     + v * VERTICAL_DIRECTION_VECTOR
             };
@@ -91,18 +91,25 @@ fn main() {
 
 fn ray_color(ray: Ray) -> Vec3 {
     // Create a sphere
-    let sphere_center = Point {x: 0.0, y: 0.0, z: -1.0};
+    let sphere_center = Point { x: 0.0, y: 0.0, z: -1.0 };
     let sphere_radius = 0.5;
+    let unit_color = Color { x: 1.0, y: 1.0, z: 1.0 };
 
-    // Return red if it hits the sphere
-    let red = Color {x: 1.0, y: 0.0, z: 0.0};
-    if sphere::hit_sphere(sphere_center, sphere_radius, ray) {
-        return red;
+    match sphere::hit_sphere(sphere_center, sphere_radius, ray) {
+        // Hits the sphere at some t value
+        Some (t) => {
+            // Normal vector
+            let normal = (ray.at(t) - sphere_center).unit_vector();
+            // Map the normal vector to some color
+            return 0.5 * (normal + unit_color);
+        },
+
+        // Does not hit the sphere
+        None => {
+            let unit_direction = ray.direction.unit_vector();
+            let t = 0.5 * (unit_direction.y + 1.0);
+            return (1.0 - t) * unit_color
+                + t * Color { x: 0.5, y: 0.7, z: 1.0 };
+        }
     }
-
-    // Otherwise the background is blue
-    let unit_direction = ray.direction.unit_vector();
-    let t = 0.5 * unit_direction.y + 1.0;
-    return (1.0 - t) * Color { x: 1.0, y: 1.0, z: 1.0 }
-        + t * Color { x: 0.5, y: 0.7, z: 1.0 };
 }

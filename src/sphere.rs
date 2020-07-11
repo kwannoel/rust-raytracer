@@ -32,14 +32,14 @@ use crate::utils;
 // Let b = 2 * (CO · d)
 // Let c = ((CO · CO) -  r ^ 2)
 // Solve: a * t ^ 2 + b * t + c = 0
-pub fn hit_sphere(center: Point, radius: f64, ray: Ray) -> bool {
+//
+// Return t values if any
+pub fn hit_sphere(center: Point, radius: f64, ray: Ray) -> Option<f64> {
     let Ray { origin, direction } = ray;
     let co = origin - center;
     let a = direction.dot(direction);
     let b = 2.0 * (co.dot(direction));
     let c = co.dot(co) - radius * radius;
-    match utils::quadratic_solver(a, b, c) {
-        Some (_) => true,
-        None => false,
-    }
+    let (root1, _root2) = utils::quadratic_solver(a, b, c)?;
+    Some(root1)
 }

@@ -5,7 +5,6 @@ pub fn quadratic_solver(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
         return None;
     }
 
-    // sqrt(b^2 - 4ac) / 2a
-    let common = discriminant.sqrt() / (2.0 * a);
-    return Some((-b - common, -b + common));
+    let common = discriminant.sqrt();
+    return Some(((-b - common) / (2.0 * a), (-b + common) / (2.0 * a)));
 }

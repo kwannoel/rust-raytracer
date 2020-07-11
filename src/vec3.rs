@@ -44,12 +44,7 @@ impl Vec3 {
 
     // Unit vector
     pub fn unit_vector(self) -> Self {
-        let length = self.length();
-        Self {
-            x: self.x / length,
-            y: self.y / length,
-            z: self.z / length,
-        }
+        self / self.length()
     }
 }
 
