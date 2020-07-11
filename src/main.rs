@@ -7,7 +7,9 @@ mod color;
 mod encoder;
 mod point;
 mod ray;
+mod sphere;
 mod vec3;
+mod utils;
 
 use color::Color;
 use point::Point;
@@ -88,6 +90,17 @@ fn main() {
 }
 
 fn ray_color(ray: Ray) -> Vec3 {
+    // Create a sphere
+    let sphere_center = Point {x: 0.0, y: 0.0, z: -1.0};
+    let sphere_radius = 0.5;
+
+    // Return red if it hits the sphere
+    let red = Color {x: 1.0, y: 0.0, z: 0.0};
+    if sphere::hit_sphere(sphere_center, sphere_radius, ray) {
+        return red;
+    }
+
+    // Otherwise the background is blue
     let unit_direction = ray.direction.unit_vector();
     let t = 0.5 * unit_direction.y + 1.0;
     return (1.0 - t) * Color { x: 1.0, y: 1.0, z: 1.0 }
