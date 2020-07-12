@@ -72,3 +72,32 @@ pub fn hit_sphere(center: Point, radius: f64, ray: Ray) -> Option<(f64, f64)> {
     let (root1, root2) = utils::quadratic_solver(a, b, c)?;
     Some((root1, root2))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+
+    #[test]
+    fn ray_should_hit_sphere() {
+        let center = Point { x: 0.0, y: -100.5, z: -1.0 };
+        let radius = 100.0;
+        let ray_origin = Point { x: 0.0, y: 0.0, z: 0.0};
+        let ray_direction = center - ray_origin;
+        let ray = Ray::new(ray_origin, ray_direction);
+        let hits = hit_sphere(center, radius, ray);
+        assert!(hits.is_some());
+    }
+
+    #[test]
+    fn ray_reflection_should_not_hit_sphere() {
+        let center = Point { x: 0.0, y: -100.5, z: -1.0 };
+        let radius = 100.0;
+        let ray_origin = Point { x: 0.0, y: 0.0, z: 0.0};
+        let reflected_center = Point { x: 0.0, y: 100.5, z: -1.0 };
+        let ray_direction = reflected_center - ray_origin;
+        let ray = Ray::new(ray_origin, ray_direction);
+        let hits = hit_sphere(center, radius, ray);
+        assert!(hits.is_none());
+    }
+}
