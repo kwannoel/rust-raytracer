@@ -10,6 +10,7 @@ mod ray;
 mod sphere;
 mod vec3;
 mod utils;
+mod object;
 
 use color::Color;
 use point::Point;
