@@ -78,7 +78,7 @@ fn main() {
         0.5
     );
     let sphere2 = Sphere::new(
-        Point { x: 0.0, y: -100.5, z: -1.0 },
+        Point { x: 0.0, y: -100.5, z: -25.0 },
         100.0
     );
 
