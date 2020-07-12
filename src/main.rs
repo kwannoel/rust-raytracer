@@ -125,7 +125,7 @@ fn ray_color(ray: Ray, world: &World, depth: i32) -> Vec3 {
     match world.nearest_point(ray) {
         Some ((t, normal)) => {
             let incidence_point = ray.at(t);
-            let target = incidence_point + normal + Point::random_point_in_unit_sphere();
+            let target = incidence_point + normal + Vec3::random_unit_vector();
             let new_ray = Ray::new(incidence_point, target - incidence_point);
             return 0.5 * ray_color(new_ray, world, depth - 1);
         },

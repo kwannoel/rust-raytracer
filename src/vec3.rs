@@ -58,6 +58,22 @@ impl Vec3 {
     pub fn random() -> Self {
         return Self::new(rand::random::<f64>(), rand::random::<f64>(), rand::random::<f64>());
     }
+
+    // Generate a random unit vector, taking the object as a lambertian surface
+    pub fn random_unit_vector() -> Self {
+        let mut rng = rand::thread_rng();
+        // z-axis component of the incident light ray
+        let z: f64 = rng.gen_range(-1.0, 1.0);
+
+        // Using pythagoras theorem, find the length of the x + y component
+        let xy = (1.0 - z * z).sqrt();
+
+        // Generate a random angle between x and y components
+        let angle = rng.gen_range(0.0, 2.0 * std::f64::consts::PI);
+        let x = xy * angle.cos();
+        let y = xy * angle.sin();
+        return Self::new(x, y, z);
+    }
 }
 
 
