@@ -14,6 +14,7 @@ mod utils;
 mod hittable;
 mod world;
 mod camera;
+mod material;
 
 use color::Color;
 use point::Point;

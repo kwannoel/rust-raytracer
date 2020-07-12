@@ -70,7 +70,7 @@ pub fn hit_sphere(center: Point, radius: f64, ray: Ray) -> Option<(f64, f64)> {
     let b = 2.0 * (co.dot(direction));
     let c = co.dot(co) - radius * radius;
     let (root1, root2) = utils::quadratic_solver(a, b, c)?;
-    if (root1 < 0.001 || root2 < 0.001) {
+    if root1 < 0.001 || root2 < 0.001 {
         return None;
     }
     Some((root1, root2))
