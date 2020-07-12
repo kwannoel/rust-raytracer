@@ -71,6 +71,9 @@ lazy_static! {
         - VERTICAL_DIRECTION_VECTOR / 2.0;
 }
 
+// RAY CONSTANTS
+const MAX_DEPTH: i32 = 100; // Maximum number of times rays can diffuse
+
 fn main() {
 
     // prints to stdout the header encoding for ppm
@@ -82,7 +85,7 @@ fn main() {
         0.5
     );
     let sphere2 = Sphere::new(
-        Point { x: 0.0, y: -100.5, z: -25.0 },
+        Point { x: 0.0, y: -100.5, z: -1.0 },
         100.0
     );
 
@@ -104,7 +107,7 @@ fn main() {
                 // Vertical direction vector
                 let v = (height as f64 + rand::random::<f64>()) / (IMAGE_PIXEL_HEIGHT - 1) as f64;
                 let ray = camera.get_ray(u, v);
-                pixel_color = pixel_color + ray_color(ray, &world);
+                pixel_color = pixel_color + ray_color(ray, &world, MAX_DEPTH);
             }
             pixel_color.encode_as_ppm_pixel(SAMPLES_PER_PIXEL);
         }
@@ -112,10 +115,21 @@ fn main() {
     eprintln!("\nDone.\n")
 }
 
-fn ray_color(ray: Ray, world: &World) -> Vec3 {
+fn ray_color(ray: Ray, world: &World, depth: i32) -> Vec3 {
     let unit_color = Color { x: 1.0, y: 1.0, z: 1.0 };
+
+    if depth <= 0 {
+        return Color::new(0.0, 0.0, 0.0);
+    }
+
     match world.nearest_point(ray) {
-        Some ((t, normal)) => 0.5 * (normal + unit_color),
+        Some ((t, normal)) => {
+            let incidence_point = ray.at(t);
+            let target = incidence_point + normal + Point::random_point_in_unit_sphere();
+            let new_ray = Ray::new(incidence_point, target - incidence_point);
+            return 0.5 * ray_color(new_ray, world, depth - 1);
+        },
+
         None => {
             let unit_direction = ray.direction.unit_vector();
             let t = 0.5 * (unit_direction.y + 1.0);

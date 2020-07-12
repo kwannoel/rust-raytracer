@@ -1,3 +1,6 @@
+extern crate rand;
+use rand::Rng;
+
 use std::ops::Neg;
 use std::ops::Mul;
 use std::ops::Add;
@@ -49,6 +52,11 @@ impl Vec3 {
     // Unit vector
     pub fn unit_vector(self) -> Self {
         self / self.length()
+    }
+
+    // Generate a random direction vector
+    pub fn random() -> Self {
+        return Self::new(rand::random::<f64>(), rand::random::<f64>(), rand::random::<f64>());
     }
 }
 
