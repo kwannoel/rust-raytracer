@@ -2,6 +2,7 @@
 
 #[macro_use]
 extern crate lazy_static;
+extern crate rand;
 
 mod color;
 mod encoder;
@@ -20,6 +21,7 @@ use ray::Ray;
 use vec3::Vec3;
 use sphere::Sphere;
 use world::World;
+use camera::Camera;
 
 // NOTE
 // Convention for coordinates is such that towards the image from camera is -ve
@@ -47,6 +49,7 @@ const ORIGIN: Point = Point { x: 0.0, y: 0.0, z: 0.0 };
 const ASPECT_RATIO: f64 = 16.0 / 9.0; // width / height
 const IMAGE_PIXEL_HEIGHT: i32 = 216;
 const IMAGE_PIXEL_WIDTH: i32 = (IMAGE_PIXEL_HEIGHT as f64 * ASPECT_RATIO) as i32;
+const SAMPLES_PER_PIXEL: i32 = 100;
 
 // IMAGE DIMENSIONS in CARTESIAN
 const VIEWPORT_HEIGHT: f64 = 2.0;
@@ -85,22 +88,25 @@ fn main() {
 
     let world = World::new( vec![&sphere1, &sphere2] );
 
+    // Initialize camera
+    let camera = Camera::new(ASPECT_RATIO, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, FOCAL_LENGTH, ORIGIN);
+
     // Write the pixels from top to bottom row
     for height in (0..IMAGE_PIXEL_HEIGHT).rev() {
         eprintln!("\rScanlines remaining: {}", height);
         // Write the pixels for each row from left to right
         for width in 0..IMAGE_PIXEL_WIDTH {
-            let u = width as f64 / (IMAGE_PIXEL_WIDTH - 1) as f64; // Horizontal direction vector
-            let v = height as f64 / (IMAGE_PIXEL_HEIGHT - 1) as f64; // Vertical direction vector
-            let ray = Ray {
-                origin: ORIGIN,
-                direction: *IMAGE_LOWER_LEFT_CORNER - ORIGIN
-                    + u * HORIZONTAL_DIRECTION_VECTOR
-                    + v * VERTICAL_DIRECTION_VECTOR
-            };
+            let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+            for _samples in 0..SAMPLES_PER_PIXEL {
+                // Horizontal direction vector
+                let u = (width as f64 + rand::random::<f64>()) / (IMAGE_PIXEL_WIDTH - 1) as f64;
 
-            let color = ray_color(ray, &world);
-            color.encode_as_ppm_pixel();
+                // Vertical direction vector
+                let v = (height as f64 + rand::random::<f64>()) / (IMAGE_PIXEL_HEIGHT - 1) as f64;
+                let ray = camera.get_ray(u, v);
+                pixel_color = pixel_color + ray_color(ray, &world);
+            }
+            pixel_color.encode_as_ppm_pixel(SAMPLES_PER_PIXEL);
         }
     }
     eprintln!("\nDone.\n")

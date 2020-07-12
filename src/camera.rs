@@ -2,7 +2,7 @@ use crate::point::Point;
 use crate::vec3::Vec3;
 use crate::ray::Ray;
 
-struct Camera {
+pub struct Camera {
     // Camera image dimensions
     aspect_ratio: f64,
     viewport_height: f64,
