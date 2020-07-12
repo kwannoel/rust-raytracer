@@ -74,6 +74,28 @@ impl Vec3 {
         let y = xy * angle.sin();
         return Self::new(x, y, z);
     }
+
+    pub fn random_point_in_unit_sphere() -> Self {
+        let mut point = Self::new(0.0, 0.0, 0.0);
+        while (true) {
+            point = Self::bound_random(-1.0, 1.0);
+
+            // If point is at the edges / outside the unit sphere continue to find another point
+            if (point.length_squared() >= 1.0) { continue; }
+            break;
+        }
+        // return the point
+        return point;
+    }
+
+    // Generate diffuse rays with no dependence on the normal
+    pub fn random_in_hemisphere(normal: Vec3) -> Self {
+        let in_unit_sphere = Self::random_point_in_unit_sphere();
+        if in_unit_sphere.dot(normal) > 0.0 {
+            return in_unit_sphere;
+        }
+        return -in_unit_sphere;
+    }
 }
 
 
