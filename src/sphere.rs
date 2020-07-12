@@ -10,6 +10,9 @@ pub struct Sphere {
 }
 
 impl Sphere {
+    pub fn new(center: Point, radius: f64) -> Self {
+        Sphere { center, radius }
+    }
     pub fn outward_normal(&self, ray: Ray, t: f64) -> Vec3 {
         (ray.at(t) - self.center).unit_vector()
     }

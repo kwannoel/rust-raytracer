@@ -11,11 +11,14 @@ mod sphere;
 mod vec3;
 mod utils;
 mod hittable;
+mod world;
 
 use color::Color;
 use point::Point;
 use ray::Ray;
 use vec3::Vec3;
+use sphere::Sphere;
+use world::World;
 
 // NOTE
 // Convention for coordinates is such that towards the image from camera is -ve
@@ -69,6 +72,18 @@ fn main() {
     // prints to stdout the header encoding for ppm
     encoder::ppm_headers(IMAGE_PIXEL_WIDTH, IMAGE_PIXEL_HEIGHT, MAX_COLOUR_VALUE);
 
+    // Create a world
+    let sphere1 = Sphere::new(
+        Point { x: 0.0, y: 0.0, z: -1.0 },
+        0.5
+    );
+    let sphere2 = Sphere::new(
+        Point { x: 0.0, y: -100.5, z: -1.0 },
+        100.0
+    );
+
+    let world = World::new( vec![&sphere1, &sphere2] );
+
     // Write the pixels from top to bottom row
     for height in (0..IMAGE_PIXEL_HEIGHT).rev() {
         eprintln!("\rScanlines remaining: {}", height);
@@ -83,14 +98,14 @@ fn main() {
                     + v * VERTICAL_DIRECTION_VECTOR
             };
 
-            let color = ray_color(ray);
+            let color = ray_color(ray, &world);
             color.encode_as_ppm_pixel();
         }
     }
     eprintln!("\nDone.\n")
 }
 
-fn ray_color(ray: Ray) -> Vec3 {
+fn ray_color(ray: Ray, world: &World) -> Vec3 {
     // Create a sphere
     let sphere_center = Point { x: 0.0, y: 0.0, z: -1.0 };
     let sphere_radius = 0.5;
