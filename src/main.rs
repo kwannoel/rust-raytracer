@@ -106,21 +106,9 @@ fn main() {
 }
 
 fn ray_color(ray: Ray, world: &World) -> Vec3 {
-    // Create a sphere
-    let sphere_center = Point { x: 0.0, y: 0.0, z: -1.0 };
-    let sphere_radius = 0.5;
     let unit_color = Color { x: 1.0, y: 1.0, z: 1.0 };
-
-    match sphere::hit_sphere(sphere_center, sphere_radius, ray) {
-        // Hits the sphere at some t value
-        Some ((t1, t2)) => {
-            // Normal vector
-            let normal = (ray.at(t1) - sphere_center).unit_vector();
-            // Map the normal vector to some color
-            return 0.5 * (normal + unit_color);
-        },
-
-        // Does not hit the sphere
+    match world.nearest_point(ray) {
+        Some ((t, normal)) => 0.5 * (normal + unit_color),
         None => {
             let unit_direction = ray.direction.unit_vector();
             let t = 0.5 * (unit_direction.y + 1.0);

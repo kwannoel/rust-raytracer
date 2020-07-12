@@ -20,10 +20,12 @@ impl Sphere {
 
 impl Hittable for Sphere
 {
-    fn hit(&self, ray: Ray) -> Vec<f64> {
+    fn hit(&self, ray: Ray) -> Vec<(f64, Vec3)> {
         match hit_sphere(self.center, self.radius, ray) {
             None => vec![],
-            Some ((root1, root2)) => vec![root1, root2],
+            Some ((root1, root2)) => vec![root1, root2].iter().map(
+                |root| (*root, *&self.outward_normal(ray, *root))
+            ).collect(),
         }
     }
 }
