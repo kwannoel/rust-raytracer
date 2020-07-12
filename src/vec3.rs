@@ -18,6 +18,10 @@ pub struct Vec3 {
  */
 
 impl Vec3 {
+    // Constructor
+    pub fn new(x: f64, y: f64, z: f64) -> Self {
+        Self { x, y, z }
+    }
     // Dot product
     pub fn dot(&self, other: Self) -> f64 {
         self.x * other.x + self.y * other.y + self.z * other.z

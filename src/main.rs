@@ -12,6 +12,7 @@ mod vec3;
 mod utils;
 mod hittable;
 mod world;
+mod camera;
 
 use color::Color;
 use point::Point;
