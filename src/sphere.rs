@@ -1,6 +1,30 @@
 use crate::point::Point;
 use crate::ray::Ray;
 use crate::utils;
+use crate::hittable::Hittable;
+use crate::vec3::Vec3;
+
+pub struct Sphere {
+    center: Point,
+    radius: f64,
+}
+
+impl Sphere {
+    pub fn outward_normal(&self, ray: Ray, t: f64) -> Vec3 {
+        (ray.at(t) - self.center).unit_vector()
+    }
+}
+
+impl Hittable for Sphere
+{
+    fn hit(&self, ray: Ray) -> Vec<f64> {
+        match hit_sphere(self.center, self.radius, ray) {
+            None => vec![],
+            Some ((root1, root2)) => vec![root1, root2],
+        }
+    }
+}
+
 // Suppose there exists a sphere past the screen
 // If a point lies the surface of the sphere,
 // The distance from the point to the center of the sphere is equivalent to the sphere's radius.
@@ -34,12 +58,12 @@ use crate::utils;
 // Solve: a * t ^ 2 + b * t + c = 0
 //
 // Return t values if any
-pub fn hit_sphere(center: Point, radius: f64, ray: Ray) -> Option<f64> {
+pub fn hit_sphere(center: Point, radius: f64, ray: Ray) -> Option<(f64, f64)> {
     let Ray { origin, direction } = ray;
     let co = origin - center;
     let a = direction.dot(direction);
     let b = 2.0 * (co.dot(direction));
     let c = co.dot(co) - radius * radius;
-    let (root1, _root2) = utils::quadratic_solver(a, b, c)?;
-    Some(root1)
+    let (root1, root2) = utils::quadratic_solver(a, b, c)?;
+    Some((root1, root2))
 }

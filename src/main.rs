@@ -10,7 +10,7 @@ mod ray;
 mod sphere;
 mod vec3;
 mod utils;
-mod object;
+mod hittable;
 
 use color::Color;
 use point::Point;
@@ -98,9 +98,9 @@ fn ray_color(ray: Ray) -> Vec3 {
 
     match sphere::hit_sphere(sphere_center, sphere_radius, ray) {
         // Hits the sphere at some t value
-        Some (t) => {
+        Some ((t1, t2)) => {
             // Normal vector
-            let normal = (ray.at(t) - sphere_center).unit_vector();
+            let normal = (ray.at(t1) - sphere_center).unit_vector();
             // Map the normal vector to some color
             return 0.5 * (normal + unit_color);
         },
