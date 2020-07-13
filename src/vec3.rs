@@ -96,6 +96,11 @@ impl Vec3 {
         }
         return -in_unit_sphere;
     }
+
+    // Reflect the ray
+    pub fn reflect(self, normal: Vec3) -> Self {
+        return self - 2.0 * self.dot(normal) * normal;
+    }
 }
 
 

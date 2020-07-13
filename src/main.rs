@@ -80,7 +80,7 @@ fn main() {
     // prints to stdout the header encoding for ppm
     encoder::ppm_headers(IMAGE_PIXEL_WIDTH, IMAGE_PIXEL_HEIGHT, MAX_COLOUR_VALUE);
 
-    // Create a world
+    // Create spheres to populate the world with
     let sphere1 = Sphere::new(
         Point { x: 0.0, y: 0.0, z: -1.0 },
         0.5
@@ -89,6 +89,19 @@ fn main() {
         Point { x: 0.0, y: -100.5, z: -1.0 },
         100.0
     );
+
+    let sphere2 = Sphere::new(
+        Point { x: 0.0, y: -100.5, z: -1.0 },
+        100.0,
+        material::Lambertian::new(Color(0.8, 0.8, 0.0)),
+    );
+
+    let sphere2 = Sphere::new(
+        Point { x: 0.0, y: -100.5, z: -1.0 },
+        100.0
+    );
+    let sphere3
+
 
     let world = World::new( vec![&sphere1, &sphere2] );
 

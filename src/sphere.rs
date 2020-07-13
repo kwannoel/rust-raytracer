@@ -3,23 +3,28 @@ use crate::ray::Ray;
 use crate::utils;
 use crate::hittable::Hittable;
 use crate::vec3::Vec3;
+use crate::material::Material;
 
-pub struct Sphere {
+pub struct Sphere<M>
+where M: Material
+{
     center: Point,
     radius: f64,
+    material: M,
 }
 
-impl Sphere {
-    pub fn new(center: Point, radius: f64) -> Self {
-        Sphere { center, radius }
+impl <M: Material> Sphere <M> {
+    pub fn new(center: Point, radius: f64, material: M) -> Self {
+        Sphere { center, radius, material }
     }
     pub fn outward_normal(&self, ray: Ray, t: f64) -> Vec3 {
         (ray.at(t) - self.center).unit_vector()
     }
 }
 
-impl Hittable for Sphere
+impl <M: Material> Hittable for Sphere<M>
 {
+    // Return the t value, normal
     fn hit(&self, ray: Ray) -> Vec<(f64, Vec3)> {
         match hit_sphere(self.center, self.radius, ray) {
             None => vec![],
