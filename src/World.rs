@@ -29,7 +29,7 @@ impl <'a> World<'a> {
     pub fn nearest_point(&self, ray: Ray) -> Option<(f64, Vec3)> {
         let t_values = self.hit(ray);
         let mut min = f64::MAX;
-        let mut min_normal = Vec3 { x: 0.0, y: 0.0, z: 0.0 };
+        let mut min_normal = Vec3{ x: 0.0, y: 0.0, z: 0.0 };
         if t_values.len() > 0 {
             for (t, normal) in t_values.iter() {
                 if *t < min {
