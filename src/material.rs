@@ -1,14 +1,13 @@
-extern crate lazy_static;
-
 use crate::color::Color;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
 
+#[derive(Copy, Clone)]
 pub struct Material {
-    albedo: Color,
+    pub albedo: Color,
     // Ray absorbed -> None
     // Ray scattered -> Some (Scattered Ray)
-    scatter: fn (ray: Ray, t: f64, normal: Vec3) -> Option<Ray>,
+    pub scatter: fn (ray: Ray, t: f64, normal: Vec3) -> Option<Ray>,
 }
 
 impl Material {

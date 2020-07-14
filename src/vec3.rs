@@ -140,6 +140,18 @@ impl Sub for Vec3 {
     }
 }
 
+// vector1 * vector2 (row-wise)
+impl Mul<Vec3> for Vec3 {
+    type Output = Self;
+    fn mul(self, other: Vec3) -> Self::Output {
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.z * other.z,
+        }
+    }
+}
+
 // vector1 * scalar
 impl Mul<f64> for Vec3 {
     type Output = Self;
