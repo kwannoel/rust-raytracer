@@ -23,7 +23,7 @@ use vec3::Vec3;
 use sphere::Sphere;
 use world::World;
 use camera::Camera;
-use material::Material;
+use material::{Lambertian, Material, Metal};
 
 // NOTE
 // Convention for coordinates is such that towards the image from camera is -ve
@@ -81,27 +81,32 @@ fn main() {
     encoder::ppm_headers(IMAGE_PIXEL_WIDTH, IMAGE_PIXEL_HEIGHT, MAX_COLOUR_VALUE);
 
     // Create spheres to populate the world with
+    let sphere1_material = Lambertian::new(Color::new(0.7, 0.3, 0.3));
     let sphere1 = Sphere::new(
         Point { x: 0.0, y: 0.0, z: -1.0 },
         0.5,
-        Material::new_lambertian(Color::new(0.7, 0.3, 0.3)),
+        Box::new(&sphere1_material),
     );
+
+    let sphere2_material = Lambertian::new(Color::new(0.8, 0.8, 0.0));
     let sphere2 = Sphere::new(
         Point { x: 0.0, y: -100.5, z: -1.0 },
         100.0,
-        Material::new_lambertian(Color::new(0.8, 0.8, 0.0)),
+        Box::new(&sphere2_material),
     );
 
+    let sphere3_material = Metal::new(Color::new(0.8, 0.6, 0.2));
     let sphere3 = Sphere::new(
         Point { x: 1.0, y: 0.0, z: -1.0 },
         0.5,
-        Material::new_metal(Color::new(0.8, 0.6, 0.2)),
+        Box::new(&sphere3_material),
     );
 
+    let sphere4_material = Metal::new(Color::new(0.8, 0.8, 0.8));
     let sphere4 = Sphere::new(
         Point { x: -1.0, y: 0.0, z: -1.0 },
         0.5,
-        Material::new_metal(Color::new(0.8, 0.8, 0.8)),
+        Box::new(&sphere4_material),
     );
 
     let world = World::new( vec![&sphere1, &sphere2, &sphere3, &sphere4] );
@@ -141,8 +146,8 @@ fn ray_color(ray: Ray, world: &World, depth: i32) -> Vec3 {
     // TODO Refactor this to be a ray event, on hitting world object
     match world.nearest_point(ray) {
         Some ((t, normal, material)) => {
-            if let Some (scattered_ray) = (material.scatter)(ray, t, normal) {
-                return material.albedo * ray_color(scattered_ray, world, depth - 1);
+            if let Some (scattered_ray) = material.scatter(ray, t, normal) {
+                return material.get_albedo() * ray_color(scattered_ray, world, depth - 1);
             }
             return Color::new(0.0, 0.0, 0.0);
         },

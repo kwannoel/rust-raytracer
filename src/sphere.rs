@@ -5,15 +5,15 @@ use crate::hittable::Hittable;
 use crate::vec3::Vec3;
 use crate::material::Material;
 
-pub struct Sphere
+pub struct Sphere<'a>
 {
     center: Point,
     radius: f64,
-    material: Material,
+    material: Box<&'a dyn Material>,
 }
 
-impl Sphere {
-    pub fn new(center: Point, radius: f64, material: Material) -> Self {
+impl <'a> Sphere <'a> {
+    pub fn new(center: Point, radius: f64, material: Box<&'a dyn Material>) -> Self {
         Sphere { center, radius, material }
     }
     pub fn outward_normal(&self, ray: Ray, t: f64) -> Vec3 {
@@ -21,15 +21,16 @@ impl Sphere {
     }
 }
 
-impl Hittable for Sphere
+impl <'a> Hittable<'a> for Sphere<'a>
 {
     // Return the t value, normal
-    fn hit(&self, ray: Ray) -> Vec<(f64, Vec3, Material)> {
+    fn hit(&self, ray: Ray) -> Vec<(f64, Vec3, Box<&'a dyn Material>)> {
         match hit_sphere(self.center, self.radius, ray) {
             None => vec![],
-            Some ((root1, root2)) => vec![root1, root2].iter().map(
-                |root| (*root, *&self.outward_normal(ray, *root), self.material)
-            ).collect(),
+            Some ((root1, root2)) => vec![
+                (root1, *&self.outward_normal(ray, root1), self.material.clone()),
+                (root2, *&self.outward_normal(ray, root2), self.material.clone()),
+            ],
         }
     }
 }
