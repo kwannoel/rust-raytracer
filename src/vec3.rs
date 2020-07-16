@@ -102,10 +102,10 @@ impl Vec3 {
         return self - 2.0 * self.dot(normal) * normal;
     }
 
-    pub fn refract(self, other: Vec3, refractive_indice_self: f64, refractive_indice_other: f64) -> Vec3 {
+    // refractive_index_self_other = refractive_indice_self / refractive_indice_other
+    pub fn refract(self, other: Vec3, refractive_index_self_other: f64) -> Vec3 {
         let cos_theta = self.dot(other);
-        let refractive_ratio = refractive_indice_self / refractive_indice_other;
-        let r_out_parallel = refractive_ratio * (self + cos_theta * other);
+        let r_out_parallel = refractive_index_self_other * (self + cos_theta * other);
         let r_out_perpendicular = -((1.0 - r_out_parallel.length_squared()).sqrt()) * other;
         let r_out = r_out_parallel + r_out_perpendicular;
         r_out
