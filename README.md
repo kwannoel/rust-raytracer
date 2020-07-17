@@ -1,6 +1,6 @@
 # Rust raytracer
 
-![Image](./static/images/image.ppm)
+![Image](./static/images/image.png)
 
 A raytracer in Rust based on https://raytracing.github.io/books/RayTracingInOneWeekend.html.
 
