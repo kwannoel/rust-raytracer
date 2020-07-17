@@ -1,3 +1,4 @@
+extern crate rand;
 use crate::color::Color;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
@@ -38,12 +39,18 @@ impl Material for Lambertian {
 }
 
 pub struct Metal {
-    albedo: Color
+    albedo: Color,
+    fuzz: f64,
 }
 
 impl Metal {
-    pub fn new(albedo: Color) -> Self {
-        Self { albedo }
+    pub fn new(albedo: Color, fuzz: f64) -> Self {
+        let corrected_fuzz = if fuzz < 1.0 {
+            fuzz
+        } else {
+            1.0
+        };
+        Self { albedo , fuzz: corrected_fuzz }
     }
 }
 
@@ -57,12 +64,13 @@ impl Material for Metal {
                t: f64,
                normal: Vec3)
                -> Option<Ray> {
-       let reflected_ray_direction = ray.direction.unit_vector().reflect(normal);
-       let reflected_ray = Ray::new(ray.at(t), reflected_ray_direction);
-       if reflected_ray_direction.dot(normal) > 0.0 {
-           return Some(reflected_ray);
-       }
-       None
+        let reflected_ray_direction = ray.direction.unit_vector().reflect(normal);
+        let scattered_ray_direction = reflected_ray_direction + self.fuzz * Vec3::random_point_in_unit_sphere();
+        let reflected_ray = Ray::new(ray.at(t), scattered_ray_direction);
+        if reflected_ray_direction.dot(normal) > 0.0 {
+            return Some(reflected_ray);
+        }
+        None
     }
 }
 
@@ -88,8 +96,41 @@ impl Material for Dielectric {
                normal: Vec3)
                -> Option<Ray> {
         let unit_direction = ray.direction.unit_vector();
-        let refracted_direction_vector = unit_direction.refract(normal, self.refractive_index);
-        let scattered_ray = Ray::new(ray.origin, refracted_direction_vector);
+
+        // normal is always outward
+        // Check if the ray is inside or outside the sphere
+        let is_inside = unit_direction.dot(normal) > 0.0;
+
+        // Ensure normal used is always against the incident ray
+        let opposite_normal = if is_inside { normal } else { -normal };
+
+        // If the ray is coming from within, use the object's refractive index
+        let refractive_index = if is_inside { self.refractive_index } else { 1.0 / self.refractive_index };
+
+        let cos_theta = f64::min((-unit_direction).dot(opposite_normal), 1.0);
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+
+        if (refractive_index * sin_theta > 1.0) {
+            let reflected_ray_direction = unit_direction.reflect(opposite_normal);
+            let scattered_ray = Ray::new(ray.at(t), reflected_ray_direction);
+            return Some(scattered_ray);
+        }
+
+        let reflect_probability = schlick(cos_theta, refractive_index);
+        if rand::random::<f64>() < reflect_probability {
+            let reflected_ray_direction = unit_direction.reflect(opposite_normal);
+            let scattered_ray = Ray::new(ray.at(t), reflected_ray_direction);
+            return Some(scattered_ray);
+        }
+
+        let refracted_direction_vector = unit_direction.refract(opposite_normal, refractive_index);
+        let scattered_ray = Ray::new(ray.at(t), refracted_direction_vector);
         return Some(scattered_ray);
     }
+}
+
+fn schlick(cosine: f64, refractive_index: f64) -> f64 {
+    let r0 = (1.0 - refractive_index) / (1.0 + refractive_index);
+    let r0_squared = r0 * r0;
+    return r0_squared + (1.0 - r0_squared) * (1.0 - cosine).powi(5);
 }

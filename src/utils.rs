@@ -12,5 +12,6 @@ pub fn quadratic_solver(a: f64, b: f64, c: f64) -> Option<(f64, f64)> {
 pub fn clamp(color_value: f64, min: f64, max: f64) -> f64 {
     if color_value < min { return min };
     if color_value > max { return max };
+    if f64::is_nan(color_value) { return max };
     return color_value;
 }
