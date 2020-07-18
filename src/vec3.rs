@@ -54,10 +54,6 @@ impl Vec3 {
         self / self.length()
     }
 
-    // Generate a random direction vector
-    pub fn random() -> Self {
-        return Self::new(rand::random::<f64>(), rand::random::<f64>(), rand::random::<f64>());
-    }
 
     // Generate a random unit vector, taking the object as a lambertian surface
     pub fn random_unit_vector() -> Self {

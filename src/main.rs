@@ -15,6 +15,7 @@ mod hittable;
 mod world;
 mod camera;
 mod material;
+mod scene;
 
 use color::Color;
 use point::Point;
@@ -24,6 +25,7 @@ use sphere::Sphere;
 use world::World;
 use camera::Camera;
 use material::{Dielectric, Lambertian, Material, Metal};
+use scene::{random_scene};
 
 // NOTE
 // Convention for coordinates is such that towards the image from camera is -ve

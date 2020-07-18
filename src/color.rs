@@ -1,6 +1,8 @@
+extern crate rand;
+use rand::Rng;
+
 use crate::vec3::Vec3;
 use crate::utils;
-
 pub type Color = Vec3;
 
 impl Color {
@@ -17,5 +19,11 @@ impl Color {
         let b_bits = (256.0 * utils::clamp(b, 0.0, 0.999)) as i32;
 
         println!("{} {} {}", r_bits, g_bits, b_bits);
+    }
+
+    // Generate a random color;
+    pub fn random() -> Self {
+        let mut rng = rand::thread_rng();
+        return Self::new(rng.gen_range(0.0, 1.0), rng.gen_range(0.0, 1.0), rng.gen_range(0.0, 1.0));
     }
 }
