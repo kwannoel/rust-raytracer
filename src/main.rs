@@ -130,8 +130,19 @@ fn main() {
     let look_from = Point::new(-2.0, 2.0, 1.0);
     let look_at = Point::new(0.0, 0.0, -1.0);
     let vup = Vec3::new(0.0, 1.0, 0.0);
-    let vertical_fov = 90.0;
-    let camera = Camera::new(look_from, look_at, vup, vertical_fov, ASPECT_RATIO, FOCAL_LENGTH);
+    let dist_to_focus = (look_from - look_at).length();
+    let aperture = 2.0;
+    let vertical_fov = 20.0;
+    let camera = Camera::new(
+        look_from,
+        look_at,
+        vup,
+        vertical_fov,
+        ASPECT_RATIO,
+        aperture,
+        dist_to_focus,
+        FOCAL_LENGTH
+    );
 
     // Write the pixels from top to bottom row
     for height in (0..IMAGE_PIXEL_HEIGHT).rev() {

@@ -112,6 +112,23 @@ impl Vec3 {
         let r_out = r_out_parallel + r_out_perpendicular;
         r_out
     }
+
+    pub fn random_in_unit_disk() -> Vec3 {
+        let mut p: Vec3;
+        let mut rng = rand::thread_rng();
+        loop {
+            p = Vec3::new(rng.gen_range(-1.0, 1.0), rng.gen_range(-1.0, 1.0), 0.0);
+            if p.length_squared() >= 1.0 { continue; }
+            break;
+        }
+        return p;
+    }
+
+    // Generate a random vector within specified bounds
+    pub fn bound_random(min: f64, max: f64) -> Self {
+        let mut rng = rand::thread_rng();
+        return Self::new(rng.gen_range(min, max), rng.gen_range(min, max), rng.gen_range(min, max));
+    }
 }
 
 
