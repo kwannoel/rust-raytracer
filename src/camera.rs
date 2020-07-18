@@ -53,7 +53,7 @@ impl Camera {
             horizontal,
             vertical,
             focal_point,
-            lower_left_corner: focal_point - horizontal/2.0 - vertical/2.0 - w,
+            lower_left_corner: origin - horizontal/2.0 - vertical/2.0 - w,
         }
     }
 
