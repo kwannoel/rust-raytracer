@@ -1,4 +1,6 @@
 extern crate rand;
+use rand::Rng;
+
 use crate::color::Color;
 use crate::ray::Ray;
 use crate::vec3::Vec3;
@@ -102,7 +104,7 @@ impl Material for Dielectric {
         let is_inside = unit_direction.dot(normal) > 0.0;
 
         // Ensure normal used is always against the incident ray
-        let opposite_normal = if is_inside { normal } else { -normal };
+        let opposite_normal = if is_inside { -normal } else { normal };
 
         // If the ray is coming from within, use the object's refractive index
         let refractive_index = if is_inside { self.refractive_index } else { 1.0 / self.refractive_index };
@@ -116,8 +118,11 @@ impl Material for Dielectric {
             return Some(scattered_ray);
         }
 
+        // Schlick
         let reflect_probability = schlick(cos_theta, refractive_index);
-        if rand::random::<f64>() < reflect_probability {
+        let mut rng = rand::thread_rng();
+
+        if rng.gen_range(0.0, 1.0)< reflect_probability {
             let reflected_ray_direction = unit_direction.reflect(opposite_normal);
             let scattered_ray = Ray::new(ray.at(t), reflected_ray_direction);
             return Some(scattered_ray);

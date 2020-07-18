@@ -8,7 +8,7 @@ use std::ops::Sub;
 use std::ops::Div;
 
 // Common interface for Vec3
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec3 {
     pub x: f64,
     pub y: f64,
@@ -97,15 +97,14 @@ impl Vec3 {
         return -in_unit_sphere;
     }
 
-    // Reflect the ray
     pub fn reflect(self, normal: Vec3) -> Self {
         return self - 2.0 * self.dot(normal) * normal;
     }
 
-    // refractive_index_self_other = refractive_indice_self / refractive_indice_other
-    pub fn refract(self, normal: Vec3, refractive_index_self_other: f64) -> Vec3 {
-        let cos_theta = -self.dot(normal);
-        let r_out_parallel = refractive_index_self_other * (self + cos_theta * normal);
+    pub fn refract(self, normal: Vec3, refractive_index: f64) -> Vec3 {
+        let normalized_self = -self.unit_vector();
+        let cos_theta = normalized_self.unit_vector().dot(normal);
+        let r_out_parallel = refractive_index * (self + cos_theta * normal);
         let r_out_perpendicular = -((1.0 - r_out_parallel.length_squared()).sqrt()) * normal;
         let r_out = r_out_parallel + r_out_perpendicular;
         r_out
@@ -194,5 +193,27 @@ impl Div<f64> for Vec3 {
             y: self.y / term,
             z: self.z / term,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn direction_should_reflect() {
+        let direction_vector = Vec3::new(1.0, 1.0, 0.0);
+        let normal = Vec3::new(1.0, 0.0, 0.0);
+        let reflected_vector = direction_vector.reflect(normal);
+        assert_eq!(direction_vector.reflect(normal), reflected_vector);
+    }
+
+    #[test]
+    fn direction_should_refract() {
+        let direction_vector = Vec3::new(1.0, 1.0, 0.0);
+        let normal = Vec3::new(1.0, 0.0, 0.0);
+        let refractive_index = 1.0/1.5; // Air -> Glass
+        let refracted_vector = Vec3::new(1.0, 1.0, 1.0);
+        assert_eq!(direction_vector.refract(normal, refractive_index), refracted_vector);
     }
 }

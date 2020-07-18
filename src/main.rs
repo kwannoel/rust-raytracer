@@ -109,14 +109,22 @@ fn main() {
         Box::new(&sphere4_material),
     );
 
-    let sphere5_material = Dielectric::new(1.5);
+    // Add a bubble within sphere 4
+    let sphere5_material = Dielectric::new(1.0/1.5);
     let sphere5 = Sphere::new(
         Point { x: -1.0, y: 0.0, z: -1.0 },
         -0.45,
         Box::new(&sphere5_material),
     );
 
-    let world = World::new( vec![&sphere1, &sphere2, &sphere3, &sphere4, &sphere5] );
+    let sphere6_material = Metal::new(Color::new(0.8, 0.1, 0.2), 0.2);
+    let sphere6 = Sphere::new(
+        Point { x: -1.0, y: 0.0, z: -1.75 },
+        0.45,
+        Box::new(&sphere6_material),
+    );
+
+    let world = World::new( vec![&sphere1, &sphere2, &sphere3, &sphere4, &sphere5, &sphere6]);// &sphere5] );
 
     // Initialize camera
     let camera = Camera::new(ASPECT_RATIO, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, FOCAL_LENGTH, ORIGIN);
