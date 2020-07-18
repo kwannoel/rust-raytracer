@@ -101,10 +101,13 @@ impl Vec3 {
         return self - 2.0 * self.dot(normal) * normal;
     }
 
+    // let first_medium_indice = incident ray region's refractive indice
+    // let second_medium_indice = Medium refractive indice
+    //
     pub fn refract(self, normal: Vec3, refractive_index: f64) -> Vec3 {
-        let normalized_self = -self.unit_vector();
-        let cos_theta = normalized_self.unit_vector().dot(normal);
-        let r_out_parallel = refractive_index * (self + cos_theta * normal);
+        let normalized_self = self.unit_vector();
+        let cos_theta = -normalized_self.dot(normal);
+        let r_out_parallel = refractive_index * (normalized_self + cos_theta * normal);
         let r_out_perpendicular = -((1.0 - r_out_parallel.length_squared()).sqrt()) * normal;
         let r_out = r_out_parallel + r_out_perpendicular;
         r_out
@@ -211,9 +214,9 @@ mod tests {
     #[test]
     fn direction_should_refract() {
         let direction_vector = Vec3::new(1.0, 1.0, 0.0);
-        let normal = Vec3::new(1.0, 0.0, 0.0);
-        let refractive_index = 1.0/1.5; // Air -> Glass
-        let refracted_vector = Vec3::new(1.0, 1.0, 1.0);
+        let normal = Vec3::new(-1.0, 0.0, 0.0);
+        let refractive_index = 1.0 / 1.5; // Air -> Glass
+        let refracted_vector = Vec3::new(0.881917103688197, 0.4714045207910316, 0.0);
         assert_eq!(direction_vector.refract(normal, refractive_index), refracted_vector);
     }
 }

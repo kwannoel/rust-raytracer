@@ -127,7 +127,11 @@ fn main() {
     let world = World::new( vec![&sphere1, &sphere2, &sphere3, &sphere4, &sphere5, &sphere6]);// &sphere5] );
 
     // Initialize camera
-    let camera = Camera::new(ASPECT_RATIO, VIEWPORT_HEIGHT, VIEWPORT_WIDTH, FOCAL_LENGTH, ORIGIN);
+    let look_from = Point::new(-2.0, 2.0, 1.0);
+    let look_at = Point::new(0.0, 0.0, -1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
+    let vertical_fov = 90.0;
+    let camera = Camera::new(look_from, look_at, vup, vertical_fov, ASPECT_RATIO, FOCAL_LENGTH);
 
     // Write the pixels from top to bottom row
     for height in (0..IMAGE_PIXEL_HEIGHT).rev() {
