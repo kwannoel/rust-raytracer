@@ -5,15 +5,17 @@ use crate::hittable::Hittable;
 use crate::vec3::Vec3;
 use crate::material::Material;
 
-pub struct Sphere<'a>
+use std::rc::Rc;
+
+pub struct Sphere
 {
     center: Point,
     radius: f64,
-    material: Box<&'a dyn Material>,
+    material: Rc<dyn Material>,
 }
 
-impl <'a> Sphere <'a> {
-    pub fn new(center: Point, radius: f64, material: Box<&'a dyn Material>) -> Self {
+impl Sphere {
+    pub fn new(center: Point, radius: f64, material: Rc<dyn Material>) -> Self {
         Sphere { center, radius, material }
     }
     pub fn outward_normal(&self, ray: Ray, t: f64) -> Vec3 {
@@ -21,10 +23,10 @@ impl <'a> Sphere <'a> {
     }
 }
 
-impl <'a> Hittable<'a> for Sphere<'a>
+impl Hittable for Sphere
 {
     // Return the t value, normal
-    fn hit(&self, ray: Ray) -> Vec<(f64, Vec3, Box<&'a dyn Material>)> {
+    fn hit(&self, ray: Ray) -> Vec<(f64, Vec3, Rc<dyn Material>)> {
         match hit_sphere(self.center, self.radius, ray) {
             None => vec![],
             Some ((root1, root2)) => vec![

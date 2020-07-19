@@ -81,59 +81,14 @@ fn main() {
 
     // prints to stdout the header encoding for ppm
     encoder::ppm_headers(IMAGE_PIXEL_WIDTH, IMAGE_PIXEL_HEIGHT, MAX_COLOUR_VALUE);
-
-    // Create spheres to populate the world with
-    let sphere1_material = Lambertian::new(Color::new(0.1, 0.2, 0.5));
-    let sphere1 = Sphere::new(
-        Point { x: 0.0, y: 0.0, z: -1.0 },
-        0.5,
-        Box::new(&sphere1_material),
-    );
-
-    let sphere2_material = Lambertian::new(Color::new(0.8, 0.8, 0.0));
-    let sphere2 = Sphere::new(
-        Point { x: 0.0, y: -100.5, z: -1.0 },
-        100.0,
-        Box::new(&sphere2_material),
-    );
-
-    let sphere3_material = Metal::new(Color::new(0.8, 0.6, 0.2), 0.3);
-    let sphere3 = Sphere::new(
-        Point { x: 1.0, y: 0.0, z: -1.0 },
-        0.5,
-        Box::new(&sphere3_material),
-    );
-
-    let sphere4_material = Dielectric::new(1.5);
-    let sphere4 = Sphere::new(
-        Point { x: -1.0, y: 0.0, z: -1.0 },
-        0.5,
-        Box::new(&sphere4_material),
-    );
-
-    // Add a bubble within sphere 4
-    let sphere5_material = Dielectric::new(1.0/1.5);
-    let sphere5 = Sphere::new(
-        Point { x: -1.0, y: 0.0, z: -1.0 },
-        -0.45,
-        Box::new(&sphere5_material),
-    );
-
-    let sphere6_material = Metal::new(Color::new(0.8, 0.1, 0.2), 0.2);
-    let sphere6 = Sphere::new(
-        Point { x: -1.0, y: 0.0, z: -1.75 },
-        0.45,
-        Box::new(&sphere6_material),
-    );
-
-    let world = World::new( vec![&sphere1, &sphere2, &sphere3, &sphere4, &sphere5, &sphere6]);// &sphere5] );
+    let world = random_scene();
 
     // Initialize camera
-    let look_from = Point::new(-2.0, 2.0, 1.0);
-    let look_at = Point::new(0.0, 0.0, -1.0);
+    let look_from = Point::new(13.0, 2.0, 3.0);
+    let look_at = Point::new(0.0, 0.0, 0.0);
     let vup = Vec3::new(0.0, 1.0, 0.0);
-    let dist_to_focus = (look_from - look_at).length();
-    let aperture = 2.0;
+    let dist_to_focus = 10.0;
+    let aperture = 0.1;
     let vertical_fov = 20.0;
     let camera = Camera::new(
         look_from,

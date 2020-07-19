@@ -76,6 +76,7 @@ impl Material for Metal {
     }
 }
 
+#[derive(Clone)]
 pub struct Dielectric {
     albedo: Color,
     refractive_index: f64,
