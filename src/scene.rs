@@ -4,7 +4,7 @@ use std::rc::Rc;
 
 use crate::world::World;
 use crate::hittable::Hittable;
-use crate::material::{Material, Metal, Lambertian, Dielectric};
+use crate::material::{Metal, Lambertian, Dielectric};
 use crate::color::Color;
 use crate::sphere::Sphere;
 use crate::point::Point;
@@ -48,14 +48,14 @@ pub fn random_scene() -> World {
         Box::new(sphere3)
     ];
 
-    for a in (-11..11) {
-        for b in (-11..11) {
+    for a in -11..11 {
+        for b in -11..11 {
             let choose_material = random_probability();
             let center = Point::new(a as f64 + random_probability(), 0.2, b as f64 + 0.9 * random_probability());
 
-            if ((center - Point::new(4.0, 0.2, 0.0)).length() > 0.9) {
+            if (center - Point::new(4.0, 0.2, 0.0)).length() > 0.9 {
 
-                if (choose_material < 0.8) {
+                if choose_material < 0.8 {
                     // diffuse material
                     let albedo = Color::random() * Color::random();
                     let sphere_material = Lambertian::new(albedo);
@@ -65,7 +65,7 @@ pub fn random_scene() -> World {
                         Rc::new(sphere_material)
                     );
                     world_objects.push(Box::new(sphere));
-                } else if (choose_material < 0.95) {
+                } else if choose_material < 0.95 {
                     // metal
                     let albedo = Color::random() * Color::random();
                     let fuzz = rng.gen_range(0.0, 0.5);

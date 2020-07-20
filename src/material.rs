@@ -113,7 +113,7 @@ impl Material for Dielectric {
         let cos_theta = f64::min((-unit_direction).dot(opposite_normal), 1.0);
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
 
-        if (refractive_index * sin_theta > 1.0) {
+        if refractive_index * sin_theta > 1.0 {
             let reflected_ray_direction = unit_direction.reflect(opposite_normal);
             let scattered_ray = Ray::new(ray.at(t), reflected_ray_direction);
             return Some(scattered_ray);

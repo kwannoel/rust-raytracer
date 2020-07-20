@@ -21,10 +21,8 @@ use color::Color;
 use point::Point;
 use ray::Ray;
 use vec3::Vec3;
-use sphere::Sphere;
 use world::World;
 use camera::Camera;
-use material::{Dielectric, Lambertian, Material, Metal};
 use scene::{random_scene};
 
 // NOTE
@@ -98,7 +96,6 @@ fn main() {
         ASPECT_RATIO,
         aperture,
         dist_to_focus,
-        FOCAL_LENGTH
     );
 
     // Write the pixels from top to bottom row

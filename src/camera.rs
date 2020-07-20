@@ -3,13 +3,7 @@ use crate::vec3::Vec3;
 use crate::ray::Ray;
 
 pub struct Camera {
-    // Camera image dimensions
-    aspect_ratio: f64,
-    viewport_height: f64,
-    viewport_width: f64,
-
     // Camera location
-    focal_length: f64,
     origin: Point,
 
     // Camera image vectors
@@ -18,12 +12,10 @@ pub struct Camera {
 
     u: Vec3,
     v: Vec3,
-    w: Vec3,
 
     lens_radius: f64,
 
     // Camera image location
-    focal_point: Vec3,
     lower_left_corner: Vec3,
 }
 
@@ -36,7 +28,6 @@ impl Camera {
         aspect_ratio: f64,
         aperture: f64,
         focus_dist: f64,
-        focal_length: f64,
     ) -> Self {
         let vfov_radians = vertical_field_of_view.to_radians();
         let camera_height = (vfov_radians/2.0).tan(); // Relative to y-axis = 0
@@ -48,26 +39,18 @@ impl Camera {
         let v = w.cross(u);
 
         let origin = look_from;
-        let focal_point = origin - Vec3::new(0.0, 0.0, focal_length);
-
         let horizontal = focus_dist * viewport_width * u;
         let vertical = focus_dist * viewport_height * v;
         let lower_left_corner = origin - horizontal/2.0 - vertical/2.0 - focus_dist*w;
         let lens_radius = aperture / 2.0;
 
         Self {
-            aspect_ratio,
-            viewport_height,
-            viewport_width,
-            focal_length,
             origin,
             horizontal,
             vertical,
-            focal_point,
             lower_left_corner,
             lens_radius,
             u,
-            w,
             v,
         }
     }
